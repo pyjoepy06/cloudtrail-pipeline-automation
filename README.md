@@ -24,11 +24,11 @@ Inputs:
   lambda_role_name = module.lambda_iam.lambda_role_name
 ```
 
-alias – KMS key alias (e.g., cloudtrail-logs-key)
-allow_cloudtrail – Whether to grant CloudTrail access
-description – Key description
-account_num - AWS Account Number
-lambda_role_name - Allows Lambda IAM role access to KMS
+alias – KMS key alias (e.g., cloudtrail-logs-key)  
+allow_cloudtrail – Whether to grant CloudTrail access  
+description – Key description  
+account_num - AWS Account Number  
+lambda_role_name - Allows Lambda IAM role access to KMS  
 
 Outputs:
 
