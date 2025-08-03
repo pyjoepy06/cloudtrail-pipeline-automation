@@ -37,7 +37,7 @@ key_arn
 key_id  
 alias_name  
   
-2. s3_cloudtrail_bucket [modules/s3](./modules/s3/)  
+2. s3_bucket [modules/s3](./modules/s3/)  
 Provisions the S3 bucket for CloudTrail log storage.  
 Inputs:
 ```bash
@@ -45,64 +45,75 @@ Inputs:
   bucket_name            = "security-cloudtrail-logs"
   account_num            = data.aws_caller_identity.current.account_id
   kms_key_arn            = module.kms_cloudtrail.key_arn
-  sqs_queue_arn          = module.cloudtrail-analyzer-sqs.queue_arn # Required for S3 to begin sending logs to SQS for Lamabda Functions notifications
-  sqs_s3_delivery_enable = true                                   # Set Trueß S3 SQS Delivery for Cloudtrail Logs
+  sqs_queue_arn          = module.cloudtrail-analyzer-sqs.queue_arn # If sqs_s3_delivery_enable = true
+  sqs_s3_delivery_enable = true                                   # Set True S3 SQS Delivery for Cloudtrail Logs
 ```
 
 bucket_name – Unique S3 bucket name  
 kms_key_arn – KMS key for server-side encryption  
 account_num - Account number, added to S3 Bucket naming  
-sqs_queue_arn - ARN needed for SQS to be used  
-sqs_s3_delivery_enable - Boolean, set to true to enable SQS queue notifications  
+sqs_queue_arn - ARN needed for SQS to be used, required if sqs_s3_delivery_enable = true
+sqs_s3_delivery_enable - Adds SQS ARN to S3 Bucket if true  
 
 Outputs:  
 bucket_id   
 bucket_arn
 
-4. cloudtrail_to_s3
-Deploys CloudTrail configured to write logs to an encrypted S3 bucket.
+4. cloudtrail [modules/cloudtrail](./modules/cloudtrail/)  
+Deploys CloudTrail configured to write logs to an encrypted S3 bucket.  
 
 Inputs:
+```bash
+#Example
+  cloudtrail_name   = "cloudtrail-analyzer"
+  cloudtrail_bucket = module.s3-cloudtrail.bucket_id
+  kms_key_arn       = module.kms_cloudtrail.key_arn
+```
 
-trail_name – CloudTrail name
-
-s3_bucket_name – Destination bucket
-
-kms_key_arn – Encryption key (optional)
-
-enable_data_events – Enable object-level tracking
-
-data_event_resources – ARNs of monitored S3 or Lambda resources
+cloudtrail_name – CloudTrail name  
+cloudtrail_bucket – Destination bucket ID  
+kms_key_arn - KMS Key ARN needed for encryption of cloudtrail files in S3  
 
 Outputs:
 
-cloudtrail_arn
+cloudtrail_arn   
+cloudtrail_name  
 
-cloudtrail_id
-
-5. sqs (create this if needed)
+5. SQS Queue [modules/sqs](./modules/sqs/)  
 Creates a standard SQS queue for buffering S3 notifications from CloudTrail logs.
 
+Inputs:  
+```bash
+#Example
+  queue_name             = "cloudtrail-analyzer-sqs"
+  s3_bucket_arn          = module.s3-cloudtrail.bucket_arn # Required for sqs_s3_delivery_enable = true
+  sqs_s3_delivery_enable = true # Enable S3 SQS Communication
+```
+
+queue_name - SQS Queue Name  
+s3_bucket_arn - Add S3 bucket ARN access for SQS Queue Policy, required if sqs_s3_delivery_enable = true
+sqs_s3_delivery_enable - Creates SQS Policy for S3 Bucket ARN  
+
 Outputs:
 
-queue_name
+queue_name  
+queue_arn  
+queue_url  
 
-queue_arn
-
-queue_url
-
-6. dynamodb_log_table
-Creates a DynamoDB table to persist CloudTrail ConsoleLogin and other monitored events.
+6. Dynamodb Table [modules/dynamodb](./modules/dynamodb/)  
+Creates a DynamoDB table to persist CloudTrail ConsoleLogin, CreateUser, DeleteUser, and other monitored events.
 
 Inputs:
+```bash
+#Example
+  table_name = "cloudtrail-monitor"
+```
 
-table_name – Name of the DynamoDB table
+table_name – Name of the DynamoDB table  
 
 Outputs:
-
-table_name
-
-table_arn
+table_name - DynamoDB Name  
+table_arn - DynamoDB Table ARN  
 
 7. sns_alerts
 Creates an SNS topic for sending alert notifications when monitored events are detected.

@@ -46,7 +46,7 @@ module "cloudtrail-analyzer-sqs" {
   source                 = "./modules/sqs"
   queue_name             = "cloudtrail-analyzer-sqs"
   s3_bucket_arn          = module.s3-cloudtrail.bucket_arn
-  sqs_s3_delivery_enable = false #Enable S3 SQS Communication
+  sqs_s3_delivery_enable = true #Enable S3 SQS Communication
 }
 
 module "lambda_iam" {
