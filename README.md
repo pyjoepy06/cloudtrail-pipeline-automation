@@ -1,87 +1,42 @@
-# cloudtrail-pipeline-automation
-Cloudtrail Monitoring and Alerting based off Key Events
-
-## ConvergeOne Code Repository for Terraform and CloudFormation
-
-This repository will be used to shared source code, code examples, and templates for FAHW and automating their infrastructure using Terraform and Control Tower management of AWS Accounts
-
-# Terraform
-
-To run Terraform code as a FAHW user you will need to configure the following:
-
-- IAM API access to root Terraform account or a CI/CD pipeline with everything configured
-- Confirm AWS acccount to use: Update backend.tf and provider.tf with S3 bucket where terrraform code will be stored and what IAM role to use, IAM role should simply just be updating the account number  in the role
-- Move to directory where source code is located (i.e. cd environment/dev or cd environment/workload)
-- Initialize, Plan, and Apply Terraform Code:
-```bash
-$ terraform init
-$ terraform plan
-$ terraform apply
-```
-- Leverage Modules located in modules folder for repeatable deployments (VPCs, VPC endpoints, Security Groups, etc)
-
-# CloudFormation
-
-- Leverage Cloudformation StackSets in Master account to deploy IAM assume roles, policies, and S3 Buckets in all accounts or a specific account
-- Code examples used for deploying terraform are located [here](IAM_CloudFormation_StackSets)
-
-🔧 AWS CloudTrail Event Processing Pipeline (Terraform Modules)
+# AWS CloudTrail Event Processing Pipeline
 This repository defines a modular Terraform-based AWS infrastructure for securely ingesting, processing, and alerting on key CloudTrail events. It demonstrates production-grade practices using:
 
 📜 CloudTrail → 🪣 S3 → 📩 SQS → 🧠 Lambda → 🗄️ DynamoDB + 🔔 SNS Alerts
 
 🔐 Encrypted via KMS and managed with IAM roles/policies
 
-☁️ Remote state backed by S3 and DynamoDB for collaboration and safety
 
-📦 Modules Overview
-1. tf_backend
-Sets up the Terraform backend using:
-
-✅ S3 Bucket for remote state (versioned, encrypted)
-
-✅ DynamoDB Table for state locking
-
-Inputs:
-
-bucket_name – Name of S3 bucket for Terraform state
-
-dynamodb_table_name – Name of DynamoDB table for locking
-
-environment – Environment label (e.g., dev, prod)
-
-Outputs:
-
-s3_bucket_name
-
-dynamodb_table_name
-
-2. kms
+## Terraform Modules Overview
+1. KMS [modules/kms](./modules/kms/)
 Creates a customer-managed KMS key for encrypting:
 
 CloudTrail logs
-
 S3 bucket (log storage)
-
-Optional use with Lambda or DynamoDB
+Lambda Function Access to Decrypt S3 Bucket files
 
 Inputs:
 
+```bash
+  description      = "KMS key for CloudTrail and S3 log encryption"
+  alias            = "cloudtrail"
+  allow_cloudtrail = true
+  account_num      = data.aws_caller_identity.current.account_id
+  lambda_role_name = module.lambda_iam.lambda_role_name
+```
+
 alias – KMS key alias (e.g., cloudtrail-logs-key)
-
 allow_cloudtrail – Whether to grant CloudTrail access
-
 description – Key description
+account_num - AWS Account Number
+lambda_role_name - Allows Lambda IAM role access to KMS
 
 Outputs:
 
 key_arn
-
 key_id
-
 alias_name
 
-3. s3_cloudtrail
+2. s3_cloudtrail
 Provisions the S3 bucket for CloudTrail log storage.
 
 Inputs:
@@ -248,4 +203,21 @@ lambda/index.py — Main Lambda function logic
 monitored_events.json — Event types to watch
 
 .gitignore — Exclude .terraform/, *.tfstate, lambda.zip
+
+
+
+# Terraform
+
+To run Terraform the code you will need to configure the following:
+
+- IAM API access to root Terraform account or a CI/CD pipeline with everything configured
+- Confirm AWS acccount to use: Update backend.tf and provider.tf with S3 bucket where terrraform code will be stored and what IAM role to use, IAM role should simply just be updating the account number  in the role
+- Move to directory where source code is located (i.e. main dir, cd environment/dev, or cd environment/workload)
+- Initialize, Plan, and Apply Terraform Code:
+```bash
+$ terraform init
+$ terraform plan
+$ terraform apply
+```
+- Leverage Modules located in modules folder for repeatable deployments (VPCs, VPC endpoints, Security Groups, etc)
 
