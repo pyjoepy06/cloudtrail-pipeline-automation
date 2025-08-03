@@ -36,7 +36,7 @@ Outputs:
 key_arn  
 key_id  
 alias_name  
-
+  
 2. s3_cloudtrail_bucket [modules/s3](./modules/s3/)  
 Provisions the S3 bucket for CloudTrail log storage.  
 Inputs:
