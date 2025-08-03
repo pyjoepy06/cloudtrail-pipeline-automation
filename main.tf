@@ -15,8 +15,9 @@ module "s3-cloudtrail" {
   source                 = "./modules/s3"
   bucket_name            = "joel-cloudtrail-logs"
   account_num            = data.aws_caller_identity.current.account_id
+  kms_key_arn            = module.kms_cloudtrail.key_arn
   sqs_queue_arn          = module.cloudtrail-analyzer-sqs.queue_arn # Required for S3 to begin sending logs to SQS for Lamabda Functions notifications
-  sqs_s3_delivery_enable = false                                    # Enable S3 SQS Delivery for Cloudtrail Logs
+  sqs_s3_delivery_enable = true                                   # Set Trueß S3 SQS Delivery for Cloudtrail Logs
 }
 
 # Enable Cloudtrail Logging

@@ -6,7 +6,7 @@ This repository defines a modular Terraform-based AWS infrastructure for securel
 🔐 Encrypted via KMS and managed with IAM roles/policies
 
 
-## Terraform Modules Overview
+## Terraform Modules Overview  
 1. KMS [modules/kms](./modules/kms/)
 Creates a customer-managed KMS key for encrypting:
 
@@ -17,6 +17,7 @@ Lambda Function Access to Decrypt S3 Bucket files
 Inputs:
 
 ```bash
+#Example
   description      = "KMS key for CloudTrail and S3 log encryption"
   alias            = "cloudtrail"
   allow_cloudtrail = true
@@ -32,23 +33,30 @@ lambda_role_name - Allows Lambda IAM role access to KMS
 
 Outputs:
 
-key_arn
-key_id
-alias_name
+key_arn  
+key_id  
+alias_name  
 
-2. s3_cloudtrail
-Provisions the S3 bucket for CloudTrail log storage.
-
+2. s3_cloudtrail_bucket [modules/s3](./modules/s3/)  
+Provisions the S3 bucket for CloudTrail log storage.  
 Inputs:
+```bash
+#Example
+  bucket_name            = "security-cloudtrail-logs"
+  account_num            = data.aws_caller_identity.current.account_id
+  kms_key_arn            = module.kms_cloudtrail.key_arn
+  sqs_queue_arn          = module.cloudtrail-analyzer-sqs.queue_arn # Required for S3 to begin sending logs to SQS for Lamabda Functions notifications
+  sqs_s3_delivery_enable = true                                   # Set Trueß S3 SQS Delivery for Cloudtrail Logs
+```
 
-bucket_name – Unique S3 bucket name
+bucket_name – Unique S3 bucket name  
+kms_key_arn – KMS key for server-side encryption  
+account_num - Account number, added to S3 Bucket naming  
+sqs_queue_arn - ARN needed for SQS to be used  
+sqs_s3_delivery_enable - Boolean, set to true to enable SQS queue notifications  
 
-kms_key_arn – KMS key for server-side encryption
-
-Outputs:
-
-bucket_name
-
+Outputs:  
+bucket_id   
 bucket_arn
 
 4. cloudtrail_to_s3
