@@ -5,7 +5,10 @@ provider "aws" {
     tags = {
       Environment            = "Joel Cloudtrail Analyzer",
       Point-Of-Contact       = "Joel Gray",
-      Point-of-Contact-Email = "joelgrayiii@hotmail.com"
+      Point-of-Contact-Email = "joelgrayiii@hotmail.com",
+      Project                = "Cloudtrail Analyzer",
+      Purpose                = "To Analyze Cloudtrail Logs",
+      Terraform              = true
     }
   }
 }

@@ -2,7 +2,7 @@
 module "kms_cloudtrail" {
   source           = "./modules/kms"
   description      = "KMS key for CloudTrail, Lambda, and S3 log encryption/decryption"
-  alias            = "cloudtrail"
+  alias            = "cloudtrail-analyzer"
   allow_cloudtrail = true
   account_num      = data.aws_caller_identity.current.account_id
   lambda_role_name = module.lambda_iam.lambda_role_name
@@ -29,14 +29,14 @@ module "cloudtrail_enable" {
 # Create Dynamodb for Cloudtrail/Lambda Analysis
 module "cloudtrail-analyzer-db" {
   source     = "./modules/dynamodb"
-  table_name = "cloudtrail-monitor"
+  table_name = "cloudtrail-analyzer"
 }
 
 #Create SNS Topic to get emails for alerts
 module "cloudtrail-analyzer-sns" {
   source       = "./modules/sns"
   topic_name   = "cloudtrail-analyzer-alerts"
-  alert_emails = ["joelgrayiii@hotmail.com"]
+  alert_emails = ["joelgrayiii@hotmail.com","joelgrayiii@gmail.com"]
 }
 
 # Create SQS Queue for Cloudtrail/Lambda Analysis
