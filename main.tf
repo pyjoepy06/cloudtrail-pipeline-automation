@@ -11,7 +11,7 @@ module "kms_cloudtrail" {
 }
 
 # Create S3 Bucket for Cloudtrail Logging
-module "s3-cloudtrail" {
+module "s3-cloudtrail-bucket" {
   source                 = "./modules/s3"
   bucket_name            = "joel-cloudtrail-logs"
   account_num            = data.aws_caller_identity.current.account_id
@@ -24,7 +24,7 @@ module "s3-cloudtrail" {
 module "cloudtrail_enable" {
   source            = "./modules/cloudtrail"
   cloudtrail_name   = "cloudtrail-analyzer"
-  cloudtrail_bucket = module.s3-cloudtrail.bucket_id
+  cloudtrail_bucket = module.s3-cloudtrail-bucket.bucket_id
   kms_key_arn       = module.kms_cloudtrail.key_arn
 }
 
@@ -45,7 +45,7 @@ module "cloudtrail-analyzer-sns" {
 module "cloudtrail-analyzer-sqs" {
   source                 = "./modules/sqs"
   queue_name             = "cloudtrail-analyzer-sqs"
-  s3_bucket_arn          = module.s3-cloudtrail.bucket_arn
+  s3_bucket_arn          = module.s3-cloudtrail-bucket.bucket_arn
   sqs_s3_delivery_enable = true #Enable S3 SQS Communication
 }
 
@@ -53,7 +53,7 @@ module "lambda_iam" {
   source        = "./modules/iam"
   role_name     = "lambda-cloudtrail-analyzer-role"
   sqs_arn       = module.cloudtrail-analyzer-sqs.queue_arn
-  s3_bucket_arn = module.s3-cloudtrail.bucket_arn
+  s3_bucket_arn = module.s3-cloudtrail-bucket.bucket_arn
   dynamodb_arn  = module.cloudtrail-analyzer-db.dynamodb_arn
   sns_arn       = module.cloudtrail-analyzer-sns.sns_topic_arn
 }
