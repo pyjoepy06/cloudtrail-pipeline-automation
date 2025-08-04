@@ -232,7 +232,12 @@ monitored_events.json — Event types to watch
 [ERROR] KeyError: 'Records'
 Traceback (most recent call last):
   File "/var/task/index.py", line 28, in lambda_handler
-    for record in s3_event['Records']: 
+    for record in s3_event['Records']:   
+
+Requires:  
+ - SQS Queue for DLQ  
+ - Redrive Policy in cloudtrail queue  
+ - A new lambda function handling notification or process of DLQ messages  
 
 
 
