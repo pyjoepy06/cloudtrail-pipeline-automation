@@ -20,28 +20,33 @@ with open("monitored_events.json", "r") as f:
 
 def lambda_handler(event, context):
     #Debugging lambda_handler
-    print(event)
+    #print(event)
+    
     for sqs_record in event['Records']:
         message = json.loads(sqs_record['body'])
         s3_event = json.loads(message['Message']) if 'Message' in message else message
+        if 'Records' not in s3_event:
+            print("No SQS 'Records' found in the event.")
+            print(f"Event data: {s3_event}")
+            return 
+        else:
+            for record in s3_event['Records']:
+                bucket = record['s3']['bucket']['name']
+                key = unquote_plus(record['s3']['object']['key'])
 
-        for record in s3_event['Records']:
-            bucket = record['s3']['bucket']['name']
-            key = unquote_plus(record['s3']['object']['key'])
+                if key.endswith('.gz'):
+                    response = s3.get_object(Bucket=bucket, Key=key)
+                    with gzip.GzipFile(fileobj=response['Body']) as f:
+                        logs = json.loads(f.read())
 
-            if key.endswith('.gz'):
-                response = s3.get_object(Bucket=bucket, Key=key)
-                with gzip.GzipFile(fileobj=response['Body']) as f:
-                    logs = json.loads(f.read())
-
-                for log_event in logs.get('Records', []):
-                    event_name = log_event.get("eventName")
-                    if event_name in monitored_event_names:
-                        print(f"[MATCH] Event: {event_name}")
-                        save_to_dynamodb(log_event)
-                        send_alert(log_event)
-                    else:
-                        print(f"[SKIP] Event: {event_name}")
+                    for log_event in logs.get('Records', []):
+                        event_name = log_event.get("eventName")
+                        if event_name in monitored_event_names:
+                            print(f"[MATCH] Event: {event_name}")
+                            save_to_dynamodb(log_event)
+                            send_alert(log_event)
+                        else:
+                            print(f"[SKIP] Event: {event_name}")
 
 def save_to_dynamodb(event):
     #Debugging Function
