@@ -11,7 +11,7 @@ module "kms_cloudtrail" {
 # Create S3 Bucket for Cloudtrail Logging
 module "s3-cloudtrail-bucket" {
   source                 = "./modules/s3"
-  bucket_name            = "joel-cloudtrail-logs"
+  bucket_name            = "cloudtrail-event-process-logs"
   account_num            = data.aws_caller_identity.current.account_id
   kms_key_arn            = module.kms_cloudtrail.key_arn
   sqs_queue_arn          = module.cloudtrail-analyzer-sqs.queue_arn # Required for S3 to begin sending logs to SQS for Lamabda Functions notifications
