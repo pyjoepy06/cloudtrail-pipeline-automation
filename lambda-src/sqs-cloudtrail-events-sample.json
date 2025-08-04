@@ -1,0 +1,23 @@
+
+{
+   "Records":[
+      {
+         "messageId":"d5a98291-17b7-4842-ac50-4b62edc8a69e",
+         "receiptHandle":"AQEBf6njVfDwhnrGYWmfcwrfBXYnQWYnz9aLHto0VlGt8MsgzEEtB4pVkP2DZ2eDFEjwQpMCIcsuPzFxKVI5dslHLC5p9ZHWix2v7lDEPIScJniXuIjGVF2RXe63dfbKqEsU0ddqf7UZQiPb2Rt5Hae7+4ychnUaSpDAZWhShbnDfSUEYQmuSHUeEjYLmJ7uncLXL8N7ofTwloBAoEkKuYHiajFK24w4ztcQ+VyrVU5h9mhtOJMSyYT18dh82Pir62KcG0ejodnJH9LOOv4/LhJ9W1mdUKdDDUoR/f4D86+ERPGreQHtNcr5uqZKXNr3Za2agioqaHsVd0a4wY3AXvgq3lqKZCbJmASAHltEeg8b35QpsJ43pAxJF2gN9JfMXK7Mx1e0AAbG5ItyoXZcbeA91w==",
+         "body":"{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"us-east-1\",\"eventTime\":\"2025-08-02T21:10:33.018Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AROAI2LRE6HOGRN3IWEKI:regionalDeliverySession\"},\"requestParameters\":{\"sourceIPAddress\":\"10.0.140.244\"},\"responseElements\":{\"x-amz-request-id\":\"1EJMPG2K9N3BZ4X5\",\"x-amz-id-2\":\"jw0JWCvHv6zwR61KbF16P0b2OQUOVuLe1v72rP22MTC0WWB/nI3+FN9AbmaCi0P2oTG0dtbpO6et58t9r4l1Q3x/yFALzawVkZzNKe+WNaQ=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"tf-s3-queue-20250802210307734000000001\",\"bucket\":{\"name\":\"joel-cloudtrail-logs-745301810991\",\"ownerIdentity\":{\"principalId\":\"AW2R4BLY720LX\"},\"arn\":\"arn:aws:s3:::joel-cloudtrail-logs-745301810991\"},\"object\":{\"key\":\"AWSLogs/745301810991/CloudTrail/us-east-1/2025/08/02/745301810991_CloudTrail_us-east-1_20250802T2115Z_rGut8ACsG8WkHjr4.json.gz\",\"size\":7142,\"eTag\":\"84efc8b9a29f35c7b409eea725df144f\",\"sequencer\":\"00688E7EC8EFF572D3\"}}}]}",
+         "attributes":{
+            "ApproximateReceiveCount":"1",
+            "SentTimestamp":"1754169033693",
+            "SenderId":"AROA4R74ZO52XAB5OD7T4:S3-PROD-END",
+            "ApproximateFirstReceiveTimestamp":"1754169033699"
+         },
+         "messageAttributes":{
+            
+         },
+         "md5OfBody":"6e7ed319be35f1d82537f2b20f0b0be2",
+         "eventSource":"aws:sqs",
+         "eventSourceARN":"arn:aws:sqs:us-east-1:745301810991:cloudtrail-analyzer-sqs",
+         "awsRegion":"us-east-1"
+      }
+   ]
+}

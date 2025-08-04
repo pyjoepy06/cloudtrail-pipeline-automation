@@ -1,0 +1,22 @@
+{
+   "Records":[
+      {
+         "messageId":"e918a368-d8e2-4036-a164-edc7ddb7086a",
+         "receiptHandle":"AQEBI5Kkl6NfizJI4Tncnlxwch1jnQXT6Nhzq9pd+zve5hUeZbWXngztSSLfDS0PPw7BhcRyrR7XvPKl/8Cb8YzLYU9NtgojrDMdfNvLX27gCarW89f8bPb85t3/6sGDGLmPzAJWfTw8ARcpDia+6JvQpAejTmiOnlANB40HFk1ste/ZUEuvtfEH7KRaSfoQn+9UOf5BZ2oQi7qbn58ilvdGeSNGeqYUyu6+LmliBkmTKBIbMdKlIeGMgDX2cRxJEHNEsPB9ojrGttd+XvQgZh22xkYCIB7bJkl+pzs5SuWYVFXOK/izk3kiblogE9kxfa3HOQpn//nwEkyR3UMV3+2mCkQzeJU9v68T3eX2NKNkMOo5GxEhWM3urrLbk2AjvsdI2jnBdG15Gwl4F9+84J9SKQ==",
+         "body":"{\"Service\":\"Amazon S3\",\"Event\":\"s3:TestEvent\",\"Time\":\"2025-08-02T21:03:07.948Z\",\"Bucket\":\"joel-cloudtrail-logs-745301810991\",\"RequestId\":\"5BM550ZVGJFM8VHS\",\"HostId\":\"KELKo+LOIeBvmjQ45llwucOp3+PtVigRLGTJ6M5ruuiUNpM0VIgv9R6VA2TBeD/Oj1napaNyqnQ=\"}",
+         "attributes":{
+            "ApproximateReceiveCount":"2",
+            "SentTimestamp":"1754168587980",
+            "SenderId":"AROA4R74ZO52UGHKZVK46:S3-PROD-S3WS",
+            "ApproximateFirstReceiveTimestamp":"1754168610840"
+         },
+         "messageAttributes":{
+            
+         },
+         "md5OfBody":"c37268a0094111d715bd55aeaac8d741",
+         "eventSource":"aws:sqs",
+         "eventSourceARN":"arn:aws:sqs:us-east-1:745301810991:cloudtrail-analyzer-sqs",
+         "awsRegion":"us-east-1"
+      }
+   ]
+}
