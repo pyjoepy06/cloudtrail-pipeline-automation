@@ -36,7 +36,7 @@ module "cloudtrail-analyzer-db" {
 module "cloudtrail-analyzer-sns" {
   source       = "./modules/sns"
   topic_name   = "cloudtrail-analyzer-alerts"
-  alert_emails = ["joelgrayiii@hotmail.com","joelgrayiii@gmail.com"]
+  alert_emails = ["joelgrayiii@hotmail.com"]
 }
 
 # Create SQS Queue for Cloudtrail/Lambda Analysis
