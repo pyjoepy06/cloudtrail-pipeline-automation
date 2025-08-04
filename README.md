@@ -222,9 +222,9 @@ $ terraform apply
 kms module → cloudtrail module → s3 module → sqs → dynamodb_module → sns module → iam module → lambda module
 
 📁 Supporting Files
-lambda/index.py — Main Lambda function logic
-monitored_events.json — Event types to watch
-.gitignore — Exclude .terraform/, *.tfstate, lambda.zip
+lambda/index.py — Main Lambda function logic  
+monitored_events.json — Event types to watch  
+.gitignore — Exclude .terraform/, *.tfstate, lambda.zip  
 
 
 
