@@ -1,9 +1,7 @@
-#Network Diagram Cloudtrail -> S3 -> SQS -> Lambda Function -> SNS
-
-#Create KMS Key for Cloudtrail & S3
+#Create KMS Key for Cloudtrail, Lambda, & S3
 module "kms_cloudtrail" {
   source           = "./modules/kms"
-  description      = "KMS key for CloudTrail and S3 log encryption"
+  description      = "KMS key for CloudTrail, Lambda, and S3 log encryption/decryption"
   alias            = "cloudtrail"
   allow_cloudtrail = true
   account_num      = data.aws_caller_identity.current.account_id
