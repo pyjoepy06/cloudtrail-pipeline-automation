@@ -39,4 +39,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 .terraform.lock.hcl
-lambda-src/index.py
+

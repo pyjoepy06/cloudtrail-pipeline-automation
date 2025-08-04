@@ -19,6 +19,7 @@ with open("monitored_events.json", "r") as f:
     monitored_event_names = set(json.load(f)["monitoredEvents"])
 
 def lambda_handler(event, context):
+    #Debugging lambda_handler
     print(event)
     for sqs_record in event['Records']:
         message = json.loads(sqs_record['body'])
@@ -43,6 +44,8 @@ def lambda_handler(event, context):
                         print(f"[SKIP] Event: {event_name}")
 
 def save_to_dynamodb(event):
+    #Debugging Function
+    #print(f"Saving event to DynamoDB: {event}")
     item = {
         "eventID": event["eventID"],
         "eventTime": event["eventTime"],
@@ -56,6 +59,8 @@ def save_to_dynamodb(event):
     table.put_item(Item=item)
 
 def send_alert(event):
+    #Debugging Function
+    #print(f"SNS Event data: {event}")
     username = event.get("userIdentity", {}).get("userName", "Unknown")
     ip = event.get("sourceIPAddress", "Unknown")
     time = event.get("eventTime", "")
