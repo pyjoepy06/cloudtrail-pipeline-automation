@@ -115,79 +115,91 @@ Outputs:
 table_name - DynamoDB Name  
 table_arn - DynamoDB Table ARN  
 
-7. sns_alerts
-Creates an SNS topic for sending alert notifications when monitored events are detected.
+7. SNS [modules/sns](./modules/sns/) 
+Creates an SNS topic for sending alert notifications when monitored events are detected via email address.
 
 Inputs:
+```bash
+#Example
+  topic_name   = "cloudtrail-analyzer-alerts"
+  alert_emails = ["joelgrayiii@hotmail.com"]
+```
 
-topic_name – SNS topic name
-
-alert_email – Email address to subscribe
+topic_name – SNS topic name  
+alert_email – Email address to subscribe, list of email users can be provided  
 
 Outputs:
 
-sns_topic_arn
+sns_topic_arn - SNS ARN ID needed for lambda function and IAM Policies
 
-8. iam_lambda_execution
+8. IAM [modules/iam](./modules/iam/)  
 Creates a least-privilege IAM role and policy for Lambda to:
 
-Read KMS-encrypted S3 log files
-
+Read KMS-encrypted S3 log files, passed via ROLE ARN in KMS module
 Consume SQS messages
-
 Write to DynamoDB
-
 Publish to SNS
-
 Log to CloudWatch
 
 Inputs:
+```bash
+#Example
+  role_name     = "lambda-cloudtrail-analyzer-role"
+  sqs_arn       = module.cloudtrail-analyzer-sqs.queue_arn
+  s3_bucket_arn = module.s3-cloudtrail.bucket_arn
+  dynamodb_arn  = module.cloudtrail-analyzer-db.dynamodb_arn
+  sns_arn       = module.cloudtrail-analyzer-sns.sns_topic_arn
+```
 
-role_name
-
-sqs_arn
-
-s3_bucket_arn
-
-dynamodb_arn
-
-sns_arn
+role_name - Lambda IAM Role Name  
+sqs_arn - SQS Trust Policies created  
+s3_bucket_arn - S3 Trust Policies created  
+dynamodb_arn - DynamoDB Trust Policies created  
+sns_arn - SNS Trust Policies Created  
 
 Outputs:
+lambda_role_name - IAM Role Name  
+lambda_role_arn - IAM Role ARN  
 
-role_name
-
-role_arn
-
-9. lambda_cloudtrail_processor
+9. Lambda Function [modules/lambda](./modules/lambda/) 
 Deploys a Lambda function that:
 
-Triggers from SQS
-
-Reads and parses S3 CloudTrail log files
-
-Filters for specific monitoredEvents (from a JSON file)
-
-Saves matched events to DynamoDB
-
+Triggers from SQS  
+Reads and parses S3 CloudTrail log files  
+Filters for specific monitoredEvents (from a JSON file), located in [monitored_event.json](./lambda-src/monitored_events.json)  
+Saves matched events to DynamoDB  
 Publishes alerts to SNS
 
 Inputs:
+```bash
+#Located in data.tf file, example for uploading lambda python config with terraform
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda-src"
+  output_path = "${path.module}/lambda.zip"
+}
+#Module Example
+  function_name       = "cloudtrail-analyzer-function"
+  iam_role_arn        = module.lambda_iam.lambda_role_arn
+  sqs_queue_arn       = module.cloudtrail-analyzer-sqs.queue_arn # Required if sqs_trigger_enable = true
+  sqs_trigger_enable  = true #Enable SQS Trigger for Lambda Function
+  dynamodb_table_name = module.cloudtrail-analyzer-db.table_name
+  sns_topic_arn       = module.cloudtrail-analyzer-sns.sns_topic_arn
+  lambda_zip_hash     = data.archive_file.lambda_zip.output_base64sha256
+  lambda_zip_path     = data.archive_file.lambda_zip.output_path
+```
 
-lambda_zip_path – Zipped deployment package path
+lambda_zip_path – Zipped deployment package path  
+lambda_zip_hash – SHA256 hash of the archive  
+sqs_queue_arn - SQS ARN  
+sqs_trigger_enable - If true added SQS ARN, enables SQS for lambda function  
+dynamodb_table_name - Passed as an environment variable in the lambda function  
+sns_topic_arn - Passed as an environment variable in the lambda function
 
-lambda_zip_hash – SHA256 hash of the archive
-
-lambda_src_path – Source folder (optional)
-
-sqs_arn, dynamodb_arn, s3_bucket_arn, sns_arn
-
-🧪 Event Filtering Logic
+### Lambda Event Filtering Logic
 The Lambda function filters for event names listed in a monitored_events.json file such as:
 
-json
-Copy
-Edit
+```bash
 {
   "monitoredEvents": [
     "ConsoleLogin",
@@ -197,46 +209,24 @@ Edit
     "PutBucketPolicy"
   ]
 }
-📌 Recommended Deployment Order
+```  
+
+## Recommended Deployment Order, if running a proof of concept
 tf_backend → initialize backend
-
-kms
-
-s3_cloudtrail
-
-cloudtrail_to_s3
-
-sqs
-
-dynamodb_log_table
-
-sns_alerts
-
-iam_lambda_execution
-
-lambda_cloudtrail_processor
-
-📁 Supporting Files
-lambda/index.py — Main Lambda function logic
-
-monitored_events.json — Event types to watch
-
-.gitignore — Exclude .terraform/, *.tfstate, lambda.zip
-
-
-
-# Terraform
-
-To run Terraform the code you will need to configure the following:
-
-- IAM API access to root Terraform account or a CI/CD pipeline with everything configured
-- Confirm AWS acccount to use: Update backend.tf and provider.tf with S3 bucket where terrraform code will be stored and what IAM role to use, IAM role should simply just be updating the account number  in the role
-- Move to directory where source code is located (i.e. main dir, cd environment/dev, or cd environment/workload)
-- Initialize, Plan, and Apply Terraform Code:
 ```bash
 $ terraform init
 $ terraform plan
 $ terraform apply
 ```
-- Leverage Modules located in modules folder for repeatable deployments (VPCs, VPC endpoints, Security Groups, etc)
+
+kms module → cloudtrail module → s3 module → sqs → dynamodb_module → sns module → iam module → lambda module
+
+📁 Supporting Files
+lambda/index.py — Main Lambda function logic
+monitored_events.json — Event types to watch
+.gitignore — Exclude .terraform/, *.tfstate, lambda.zip
+
+
+
+
 

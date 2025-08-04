@@ -17,7 +17,7 @@ module "s3-cloudtrail" {
   account_num            = data.aws_caller_identity.current.account_id
   kms_key_arn            = module.kms_cloudtrail.key_arn
   sqs_queue_arn          = module.cloudtrail-analyzer-sqs.queue_arn # Required for S3 to begin sending logs to SQS for Lamabda Functions notifications
-  sqs_s3_delivery_enable = true                                   # Set Trueß S3 SQS Delivery for Cloudtrail Logs
+  sqs_s3_delivery_enable = true                                     # Set Trueß S3 SQS Delivery for Cloudtrail Logs
 }
 
 # Enable Cloudtrail Logging
@@ -63,7 +63,7 @@ module "lambda_anaylzer_function" {
   function_name       = "cloudtrail-analyzer-function"
   iam_role_arn        = module.lambda_iam.lambda_role_arn
   sqs_queue_arn       = module.cloudtrail-analyzer-sqs.queue_arn
-  sqs_trigger_enable  = false #Enable SQS Trigger for Lambda Function
+  sqs_trigger_enable  = true #Enable SQS Trigger for Lambda Function
   dynamodb_table_name = module.cloudtrail-analyzer-db.table_name
   sns_topic_arn       = module.cloudtrail-analyzer-sns.sns_topic_arn
   lambda_zip_hash     = data.archive_file.lambda_zip.output_base64sha256
