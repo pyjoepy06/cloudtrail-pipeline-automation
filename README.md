@@ -228,7 +228,7 @@ monitored_events.json — Event types to watch
 
 ## Future Features enhacement
 - Add DLQ to SQS in case of failures
-- SQS sends s3:TestEvents which causes an Key error in lambda in Cloudwatch debugging, create python logic to skip if s3:TestEvents are sent from SQS. Refer to file name [sqs-cloudtrail-s3test-example.json](./lambda-src/sqs-cloudtrail-s3test-example.json). Error message below:
+- SQS sends s3:TestEvents which causes an Key error in lambda in Cloudwatch debugging, create python logic to skip if s3:TestEvents are sent from SQS. Refer to file name [sqs-cloudtrail-s3test-example.json](./lambda-src/sqs-cloudtrail-s3test-example.json). Error message:  
 [ERROR] KeyError: 'Records'
 Traceback (most recent call last):
   File "/var/task/index.py", line 28, in lambda_handler
