@@ -5,6 +5,15 @@ This repository defines a modular Terraform-based AWS infrastructure for securel
 
 🔐 Encrypted via KMS and managed with IAM roles/policies
 
+## Recommended Deployment Order, if running a proof of concept
+Update backedn.tf or change file name if saving state file locally
+
+Initate Standard Terraform procdures
+```bash
+$ terraform init
+$ terraform plan
+$ terraform apply
+```
 
 ## Terraform Modules Overview  
 1. KMS [modules/kms](./modules/kms/)
@@ -210,16 +219,6 @@ The Lambda function filters for event names listed in a monitored_events.json fi
   ]
 }
 ```  
-
-## Recommended Deployment Order, if running a proof of concept
-tf_backend → initialize backend
-```bash
-$ terraform init
-$ terraform plan
-$ terraform apply
-```
-
-kms module → cloudtrail module → s3 module → sqs → dynamodb_module → sns module → iam module → lambda module
 
 ## Supporting Files
 lambda/index.py — Main Lambda function logic  
