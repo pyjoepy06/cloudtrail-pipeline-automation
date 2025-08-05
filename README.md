@@ -5,10 +5,11 @@ This repository defines a modular Terraform-based AWS infrastructure for securel
 
 🔐 Encrypted via KMS and managed with IAM roles/policies
 
-## Recommended Deployment Order, if running a proof of concept
-Update backedn.tf or change file name if saving state file locally
-
-Initate Standard Terraform procdures
+## Recommended Deployment Order
+1. Update backend.tf or change/delete file name if saving state file locally  
+2. Update data.tf file as needed, otherwise file is using local lambda code in ./lambda-src folder  
+3. Update modules data in main.tf file as needed  
+4. Initate Standard Terraform procdures  
 ```bash
 $ terraform init
 $ terraform plan
