@@ -1,9 +1,9 @@
 # AWS CloudTrail Event Processing Pipeline
 This repository defines a modular Terraform-based AWS infrastructure for securely ingesting, processing, and alerting on key CloudTrail events. It demonstrates production-grade practices using:
 
-📜 CloudTrail → 🪣 S3 → 📩 SQS → 🧠 Lambda → 🗄️ DynamoDB + 🔔 SNS Alerts
+CloudTrail →  S3 →  SQS →  Lambda →  DynamoDB +  SNS Alerts
 
-🔐 Encrypted via KMS and managed with IAM roles/policies
+Encrypted via KMS and managed with IAM roles/policies
 
 ## Best Practices Applied  
 
