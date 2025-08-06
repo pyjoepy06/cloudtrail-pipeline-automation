@@ -9,7 +9,8 @@ This repository defines a modular Terraform-based AWS infrastructure for securel
 1. Update backend.tf or change/delete file name if saving state file locally  
 2. Update data.tf file as needed, otherwise file is using local lambda code in ./lambda-src folder  
 3. Update modules data in main.tf file as needed  
-4. Initate Standard Terraform procdures  
+4. Confirm CLI access in correct AWS account
+5. Initate Standard Terraform procdures
 ```bash
 $ terraform init
 $ terraform plan
