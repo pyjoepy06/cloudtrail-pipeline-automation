@@ -5,6 +5,13 @@ This repository defines a modular Terraform-based AWS infrastructure for securel
 
 🔐 Encrypted via KMS and managed with IAM roles/policies
 
+## Best Practices Applied  
+
+- KMS Encrypts/Decrypts data for Cloudtrail, S3, and Lambda
+- SQS is durable queuing between log delivery and processing in Lambda. Which provides better control over throttling, error handling, and batching
+- IAM Role is using best practice zero trust polcies but limiting specific priviledges to specific ARNs/resources
+- DynamoDB, SQS, SNS are secure by AWS with either at-rest or in-transit encryption for data
+
 ## Recommended Deployment Order
 1. Update backend.tf or change/delete file name if saving state file locally  
 2. Update data.tf file as needed, otherwise file is using local lambda code in ./lambda-src folder  
